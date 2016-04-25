@@ -65,11 +65,11 @@ function mtime(filename) {
   return +fs.statSync(filename).mtime;
 }
 
-function buildCacheKey(opts) {
+function buildCacheKey(opts, filename) {
   if (cacheSourceRoot && projectName) {
     opts = _.extend(_.cloneDeep(opts), {
       checksum: checksum(opts.filename),
-      filename: `${projectName}:${path.relative(cacheSourceRoot, opts.filename)}`
+      filename: `${projectName}:${path.relative(cacheSourceRoot, filename)}`
     });
   }
   return `${JSON.stringify(opts)}:${babel.version}`;
@@ -83,7 +83,8 @@ function compile(filename) {
     filename
   }));
 
-  let cacheKey = buildCacheKey(opts);
+  let cacheKeyOpts = (cacheSourceRoot && projectName) ? transformOpts : opts;
+  let cacheKey = buildCacheKey(cacheKeyOpts, filename);
 
   let env = process.env.BABEL_ENV || process.env.NODE_ENV;
   if (env) cacheKey += `:${env}`;
