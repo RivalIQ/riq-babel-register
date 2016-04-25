@@ -91,7 +91,13 @@ function compile(filename) {
 
   if (cache) {
     let cached = cache[cacheKey];
-    if (cached && cached.mtime === mtime(filename)) {
+    // if we're using projectName and cacheSourceRoot,
+    // rely on checksum instead of mtime
+    if (cached && cacheSourceRoot && projectName) {
+      debug(`[${projectName}] from cache ${filename}`);
+      result = cached;
+    }
+    else if (cached && cached.mtime === mtime(filename)) {
       debug(`[${projectName}] from cache ${filename}`);
       result = cached;
     } else if (cached) {
