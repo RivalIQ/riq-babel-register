@@ -93,6 +93,8 @@ function compile(filename) {
     if (cached && cached.mtime === mtime(filename)) {
       debug(`[${projectName}] from cache ${filename}`);
       result = cached;
+    } else if (cached) {
+      debug(`[${projectName}] cache miss due to mtime ${filename}`)
     }
   }
 
