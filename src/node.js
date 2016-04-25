@@ -96,8 +96,7 @@ function compile(filename) {
     if (cached && cacheSourceRoot && projectName) {
       debug(`[${projectName}] from cache ${filename}`);
       result = cached;
-    }
-    else if (cached && cached.mtime === mtime(filename)) {
+    } else if (cached && cached.mtime === mtime(filename)) {
       debug(`[${projectName}] from cache ${filename}`);
       result = cached;
     } else if (cached) {
