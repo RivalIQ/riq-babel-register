@@ -68,7 +68,7 @@ function mtime(filename) {
 function buildCacheKey(opts, filename) {
   if (cacheSourceRoot && projectName) {
     opts = _.extend(_.cloneDeep(opts), {
-      checksum: checksum(opts.filename),
+      checksum: checksum(filename),
       filename: `${projectName}:${path.relative(cacheSourceRoot, filename)}`
     });
   }
