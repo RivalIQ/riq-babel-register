@@ -24,13 +24,13 @@ require("riq-babel-register")({
   ],
   cacheSourceRoot: __dirname,
   projectName: 'my-server',
-  extensions: ['._js'],
-  debug: winston.debug.bind(winston),
-  log: winston.info.bind(winston)
+  extensions: ['.es6', '.es', '.jsx', '.js', '._js'],
+  debug: console.log.bind(console),
+  log: console.log.bind(console)
 });
 ```
 
-All subsequent files required by node with the extensions `.es6`, `.es`, `.jsx` and `.js` will be transformed by Babel.
+All subsequent files required by node with the extensions `.es6`, `.es`, `.jsx`, `.js` and `._js` will be transformed by Babel.
 
 See [documentation](http://babeljs.io/docs/usage/require/) for details.
 
