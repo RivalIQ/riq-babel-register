@@ -1,6 +1,6 @@
 {
   "name": "riq-babel-register",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "babel require hook with relative caching",
   "license": "MIT",
   "repository": "https://github.com/jshepard/riq-babel-register",

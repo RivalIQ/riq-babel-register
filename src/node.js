@@ -75,7 +75,7 @@ function buildCacheKey(opts, filename) {
   return `${JSON.stringify(opts)}:${babel.version}`;
 }
 
-function compile(filename) {
+function compile(filename, code) {
   let result;
 
   // merge in base options and resolve all the plugins and presets relative to this file
@@ -106,13 +106,18 @@ function compile(filename) {
 
   if (!result) {
     log(chalk.gray(`[${projectName}] transforming ${filename}`));
-    result = babel.transformFileSync(filename, _.extend(opts, {
+    let transformOptions = _.extend(opts, {
       // Do not process config files since has already been done with the OptionManager
       // calls above and would introduce duplicates.
       babelrc:   false,
       sourceMap: 'both',
       ast:       false
-    }));
+    });
+    if (code) {
+        result = babel.transform(code, transformOptions);
+    } else {
+        result = babel.transformFileSync(filename, transformOptions);
+    }
     saveNextTick();
   }
 
@@ -134,20 +139,20 @@ function shouldIgnore(filename) {
   }
 }
 
-function loader(m, filename) {
-  m._compile(compile(filename), filename);
+function loader(m, filename, code) {
+  m._compile(compile(filename, code), filename);
 }
 
 function registerExtension(ext) {
   let old = oldHandlers[ext] || oldHandlers['.js'] || require.extensions['.js'];
 
-  require.extensions[ext] = function (m, filename) {
+  require.extensions[ext] = function (m, filename, code) {
     if (shouldIgnore(filename)) {
       debug(`[${projectName}] ignoring ${filename}`)
       old(m, filename);
     } else {
       debug(`[${projectName}] loading ${filename}`)
-      loader(m, filename, old);
+      loader(m, filename, code, old);
     }
   };
 }
