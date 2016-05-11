@@ -3,7 +3,7 @@
   "version": "0.2.0",
   "description": "babel require hook with relative caching",
   "license": "MIT",
-  "repository": "https://github.com/jshepard/riq-babel-register",
+  "repository": "https://github.com/RivalIQ/riq-babel-register",
   "main": "lib/node.js",
   "browser": "lib/browser.js",
   "scripts": {
