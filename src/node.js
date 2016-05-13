@@ -33,6 +33,7 @@ let oldHandlers   = {};
 let maps          = {};
 let cwd = process.cwd();
 
+let useRelativeCache = false;
 let cacheSourceRoot;
 let projectName;
 let ignore;
@@ -52,7 +53,7 @@ function saveNextTick() {
   }
 }
 
-function checksum (filename, algorithm = 'md5', encoding = 'hex') {
+function getChecksum (filename, algorithm = 'md5', encoding = 'hex') {
   let fileEncoding = 'utf8';
 
   return crypto
@@ -61,14 +62,13 @@ function checksum (filename, algorithm = 'md5', encoding = 'hex') {
     .digest(encoding)
 }
 
-function mtime(filename) {
+function getMtime(filename) {
   return +fs.statSync(filename).mtime;
 }
 
 function buildCacheKey(opts, filename) {
   if (cacheSourceRoot && projectName) {
     opts = _.extend(_.cloneDeep(opts), {
-      checksum: checksum(filename),
       filename: `${projectName}:${path.relative(cacheSourceRoot, filename)}`
     });
   }
@@ -83,24 +83,30 @@ function compile(filename, code) {
     filename
   }));
 
-  let cacheKeyOpts = (cacheSourceRoot && projectName) ? transformOpts : opts;
+  let cacheKeyOpts = (useRelativeCache) ? transformOpts : opts;
   let cacheKey = buildCacheKey(cacheKeyOpts, filename);
 
   let env = process.env.BABEL_ENV || process.env.NODE_ENV;
   if (env) cacheKey += `:${env}`;
+  let checksum = useRelativeCache ? getChecksum(filename) : null;
 
   if (cache) {
     let cached = cache[cacheKey];
-    // if we're using projectName and cacheSourceRoot,
-    // rely on checksum instead of mtime
-    if (cached && cacheSourceRoot && projectName) {
-      debug(`[${projectName}] from cache ${filename}`);
-      result = cached;
-    } else if (cached && cached.mtime === mtime(filename)) {
-      debug(`[${projectName}] from cache ${filename}`);
-      result = cached;
+    // if we're using the relative cache, rely on checksum instead of mtime
+    if (cached && useRelativeCache) {
+      if (cached.checksum === checksum) {
+        debug(`[${projectName}] from cache ${filename}`);
+        result = cached;
+      } else {
+        debug(`[${projectName}] cache miss due to checksum ${filename}`)
+      }
     } else if (cached) {
-      debug(`[${projectName}] cache miss due to mtime ${filename}`)
+      if (cached.mtime === getMtime(filename)) {
+        debug(`[${projectName}] from cache ${filename}`);
+        result = cached;
+      } else {
+        debug(`[${projectName}] cache miss due to mtime ${filename}`)
+      }
     }
   }
 
@@ -123,7 +129,8 @@ function compile(filename, code) {
 
   if (cache) {
     cache[cacheKey] = result;
-    result.mtime = mtime(filename);
+    result.mtime = getMtime(filename);
+    result.checksum = checksum;
   }
 
   maps[filename] = result.map;
@@ -188,6 +195,7 @@ module.exports = function (opts = {}) {
   if (opts.cacheSourceRoot && opts.projectName) {
     cacheSourceRoot = opts.cacheSourceRoot;
     projectName = opts.projectName;
+    useRelativeCache = true;
   }
 
   if ((opts.cacheSourceRoot && !opts.projectName) || (!opts.cacheSourceRoot && opts.projectName)) {
