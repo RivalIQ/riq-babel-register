@@ -14,7 +14,7 @@ $ npm install riq-babel-register
 
 ```js
 require("riq-babel-register")({
-  presets: ['es2015', 'stage-0'],
+  presets: ['node6', 'stage-0'],
   plugins: [
     ['streamline', {
         extensions: ['._js'],
