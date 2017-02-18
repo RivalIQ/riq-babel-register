@@ -7,7 +7,7 @@
   "main": "lib/node.js",
   "browser": "lib/browser.js",
   "scripts": {
-    "prepublish": "babel src --out-dir lib"
+    "prepublish": "printenv | grep PATH ; pwd ; babel src --out-dir lib"
   },
   "dependencies": {
     "babel-core": "^6.6.0",
