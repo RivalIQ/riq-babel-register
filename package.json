@@ -10,7 +10,9 @@
     "postinstall": "babel src --out-dir lib"
   },
   "dependencies": {
+    "babel-cli": "^6.23.0",
     "babel-core": "^6.23.1",
+    "babel-preset-node6": "^11.0.0",
     "chalk": "^1.1.3",
     "home-or-tmp": "^1.0.0",
     "lodash": "^3.10.0",
@@ -22,10 +24,6 @@
     "presets": [
       "node6"
     ]
-  },
-  "devDependencies": {
-    "babel-cli": "^6.23.0",
-    "babel-preset-node6": "^11.0.0"
   },
   "engines": {
     "node": "*",
