@@ -4,8 +4,8 @@
   "description": "babel require hook with relative caching",
   "license": "MIT",
   "repository": "https://github.com/RivalIQ/riq-babel-register",
-  "main": "lib/node.js",
-  "browser": "lib/browser.js",
+  "main": "src/node.js",
+  "browser": "src/browser.js",
   "scripts": {
     "prepublish": "babel src --out-dir lib"
   },
