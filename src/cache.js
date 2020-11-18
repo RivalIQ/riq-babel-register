@@ -1,8 +1,8 @@
-import path from 'path';
-import fs from 'fs';
-import { sync as mkdirpSync } from 'mkdirp';
-import homeOrTmp from 'home-or-tmp';
-import pathExists from 'path-exists';
+const path = require('path');
+const fs = require('fs');
+const mkdirp = require('mkdirp'); // { sync as mkdirpSync }
+const homeOrTmp = require('home-or-tmp');
+const pathExists = require('path-exists');
 
 const FILENAME = process.env.BABEL_CACHE_PATH || path.join(homeOrTmp, '.riq-babel-register.json');
 let data = {};
@@ -11,7 +11,7 @@ let data = {};
  * Write stringified cache to disk.
  */
 
-export function save() {
+const save = () => {
   let serialised = {};
   try {
     serialised = JSON.stringify(data, null, '  ');
@@ -23,7 +23,7 @@ export function save() {
       throw err;
     }
   }
-  mkdirpSync(path.dirname(FILENAME));
+  mkdirp.sync(path.dirname(FILENAME));
   fs.writeFileSync(FILENAME, serialised);
 }
 
@@ -31,7 +31,7 @@ export function save() {
  * Load cache from disk and parse.
  */
 
-export function load() {
+const load = () => {
   if (process.env.BABEL_DISABLE_CACHE) return;
 
   process.on('exit', save);
@@ -50,6 +50,10 @@ export function load() {
  * Retrieve data from cache.
  */
 
-export function get() {
+function get() {
   return data;
 }
+
+exports.save = save;
+exports.load = load;
+exports.get = get;
