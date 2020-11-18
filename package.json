@@ -1,6 +1,6 @@
 {
   "name": "riq-babel-register",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "babel require hook with relative caching",
   "license": "MIT",
   "repository": "https://github.com/RivalIQ/riq-babel-register",
