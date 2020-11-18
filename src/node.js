@@ -204,7 +204,7 @@ module.exports = function (opts = {}) {
 
   projectName = projectName || 'BABEL';
 
-  if (opts.extensions) hookExtensions(util.arrayify(opts.extensions));
+  if (opts.extensions) hookExtensions(babel_core.util.arrayify(opts.extensions));
 
   delete opts.extensions;
   delete opts.ignore;
