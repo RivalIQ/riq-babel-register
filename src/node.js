@@ -1,12 +1,11 @@
-import fs from 'fs';
-import path from 'path';
-import crypto from 'crypto';
-import _ from 'lodash';
-import chalk from 'chalk';
-import sourceMapSupport from 'source-map-support';
-import * as babel from 'babel-core';
-import { util, OptionManager } from 'babel-core';
-import * as registerCache from './cache';
+const fs = require('fs');
+const path = require('path');
+const crypto = require('crypto');
+const _ = require('lodash');
+const chalk = require('chalk');
+const sourceMapSupport = require('source-map-support');
+const babel = require('babel-core');
+const registerCache = require('./cache');
 
 sourceMapSupport.install({
   handleUncaughtExceptions: false,
@@ -79,7 +78,7 @@ function compile(filename, code) {
   let result;
 
   // merge in base options and resolve all the plugins and presets relative to this file
-  let opts = new OptionManager().init(_.extend(_.cloneDeep(transformOpts), {
+  let opts = new babel.OptionManager().init(_.extend(_.cloneDeep(transformOpts), {
     filename
   }));
 
@@ -142,7 +141,7 @@ function shouldIgnore(filename) {
   if (!ignore && !only) {
     return getRelativePath(filename).split(path.sep).indexOf('node_modules') >= 0;
   } else {
-    return util.shouldIgnore(filename, ignore || [], only);
+    return babel.util.shouldIgnore(filename, ignore || [], only);
   }
 }
 
@@ -182,12 +181,12 @@ function hookExtensions(_exts) {
   });
 }
 
-hookExtensions(util.canCompile.EXTENSIONS);
+hookExtensions(babel.util.canCompile.EXTENSIONS);
 
 module.exports = function (opts = {}) {
 
-  if (opts.only != null) only = util.arrayify(opts.only, util.regexify);
-  if (opts.ignore != null) ignore = util.arrayify(opts.ignore, util.regexify);
+  if (opts.only != null) only = babel.util.arrayify(opts.only, babel.util.regexify);
+  if (opts.ignore != null) ignore = babel.util.arrayify(opts.ignore, babel.util.regexify);
   if (opts.cache === false) cache = null;
   if (opts.log) log = opts.log;
   if (opts.debug) debug = opts.debug;
@@ -204,7 +203,7 @@ module.exports = function (opts = {}) {
 
   projectName = projectName || 'BABEL';
 
-  if (opts.extensions) hookExtensions(util.arrayify(opts.extensions));
+  if (opts.extensions) hookExtensions(babel.util.arrayify(opts.extensions));
 
   delete opts.extensions;
   delete opts.ignore;
