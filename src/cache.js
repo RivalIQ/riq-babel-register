@@ -1,6 +1,6 @@
 const path = require('path');
 const fs = require('fs');
-const mkdirp = require('mkdirp'); // { sync as mkdirpSync }
+const mkdirp = require('mkdirp');
 const homeOrTmp = require('home-or-tmp');
 const pathExists = require('path-exists');
 
